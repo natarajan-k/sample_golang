@@ -25,5 +25,5 @@ func main() {
 
 func handle(w http.ResponseWriter, r *http.Request) {
     goRandomValue.Set(rand.Float64())
-    fmt.Fprintf(w, "Hello")
+    fmt.Fprintf(w, "Hello1")
 }
