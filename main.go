@@ -1,26 +1,24 @@
 package main
+
 import (
-        "net/http"
-        "fmt"
-        "math/rand"
-//        "github.com/prometheus/client_golang/prometheus"
+  "fmt"
+  "net/http"
+  //        "github.com/prometheus/client_golang/prometheus"
         "github.com/prometheus/client_golang/prometheus/promauto"
         "github.com/prometheus/client_golang/prometheus/promhttp"
+
 )
 
-var (
-    goRandomValue = promauto.NewGauge(prometheus.GaugeOpts{
-	Name: "go_random_value",
-	Help: "randomly generated value in Go",
-    })
-)
-
-func main() {
-    http.HandleFunc("/", handle)
-    http.Handle("/metrics", promhttp.Handler())
+func homePage(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, "My Awesome Go App")
 }
 
-func handle(w http.ResponseWriter, r *http.Request) {
-    goRandomValue.Set(rand.Float64())
-    fmt.Fprintf(w, "Hello1")
+func setupRoutes() {
+  http.HandleFunc("/", homePage)
+}
+
+func main() {
+  fmt.Println("Go Web App Started on Port 3000")
+  setupRoutes()
+  http.ListenAndServe(":3000", nil)
 }
