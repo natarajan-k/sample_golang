@@ -1,26 +1,49 @@
 package main
+
 import (
-        "net/http"
-        "fmt"
-        "math/rand"
-        "github.com/prometheus/client_golang/prometheus"
-        "github.com/prometheus/client_golang/prometheus/promauto"
-        "github.com/prometheus/client_golang/prometheus/promhttp"
+   "github.com/prometheus/client_golang/prometheus"
+   "github.com/prometheus/client_golang/prometheus/promhttp"
+   "net/http"
 )
 
-var (
-    goRandomValue = promauto.NewGauge(prometheus.GaugeOpts{
-	Name: "go_random_value",
-	Help: "randomly generated value in Go",
-    })
+var ordersPlaced = prometheus.NewGauge(
+   prometheus.GaugeOpts{
+      Name: "orders_placed",
+      Help: "Total number of orders placed",
+   },
 )
 
 func main() {
-    http.HandleFunc("/", handle)
-    http.Handle("/metrics", promhttp.Handler())
+
+   http.HandleFunc("/", Index)
+
+   http.HandleFunc("/PlaceOrder", PlaceOrder)
+   http.HandleFunc("/CancelOrder", CancelOrder)
+
+   //Here we are saying that any call to /metrics should be handled
+   // by prometheus's http handler for metrics
+   http.Handle("/metrics", promhttp.Handler())
+
+   //Here we are telling prometheus to keep track of ordersPlaced metric
+   prometheus.MustRegister(ordersPlaced)
+
+   // start server
+   if err := http.ListenAndServe(":8080", nil); err != nil {
+      panic(err)
+   }
+
 }
 
-func handle(w http.ResponseWriter, r *http.Request) {
-    goRandomValue.Set(rand.Float64())
-    fmt.Fprintf(w, "Hello1")
+func Index(res http.ResponseWriter, req *http.Request) {
+
+}
+
+func PlaceOrder(res http.ResponseWriter, req *http.Request) {
+   //Increment counter
+   ordersPlaced.Inc()
+}
+
+func CancelOrder(res http.ResponseWriter, req *http.Request) {
+   //Decrement counter
+   ordersPlaced.Dec()
 }
