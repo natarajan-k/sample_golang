@@ -156,9 +156,9 @@
 // this warning.
 //
 // Enjoy promauto responsibly!
-package promauto
+package main
 
-import "github.com/prometheus/client_golang/prometheus"
+//import "github.com/prometheus/client_golang/prometheus"
 
 // NewCounter works like the function of the same name in the prometheus package
 // but it automatically registers the Counter with the
