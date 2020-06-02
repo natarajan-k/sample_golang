@@ -1,7 +1,6 @@
 package main
 import (
         "net/http"
-        "log"
         "fmt"
         "math/rand"
         "github.com/prometheus/client_golang/prometheus"
@@ -17,10 +16,8 @@ var (
 )
 
 func main() {
-    log.Printf("main function")
     http.HandleFunc("/", handle)
     http.Handle("/metrics", promhttp.Handler())
-    log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
